@@ -11,6 +11,8 @@ const permissionRouter = {
   meta: {
     title: "权限管理",
     icon: "ep:lollipop",
+    // 开启则这个菜单不会显示
+    showLink: false,
     rank: 10
   },
   children: [

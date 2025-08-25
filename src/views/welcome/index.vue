@@ -2,8 +2,11 @@
 defineOptions({
   name: "Welcome"
 });
+import HeroGaussAuditIllustration from "@/views/dashbord/HeroGaussAuditIllustration.vue";
 </script>
 
 <template>
-  <h1>Pure-Admin-Thin（非国际化版本）</h1>
+  <section class="hero">
+    <HeroGaussAuditIllustration />
+  </section>
 </template>

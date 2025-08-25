@@ -10,7 +10,7 @@ import {
 import {
   type UserResult,
   type RefreshTokenResult,
-  getLogin,
+  userLogin,
   refreshTokenApi
 } from "@/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
@@ -20,8 +20,8 @@ export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
     // 头像
     avatar: storageLocal().getItem<DataInfo<number>>(userKey)?.avatar ?? "",
-    // 用户名
-    username: storageLocal().getItem<DataInfo<number>>(userKey)?.username ?? "",
+    // 账号
+    account: storageLocal().getItem<DataInfo<number>>(userKey)?.account ?? "",
     // 昵称
     nickname: storageLocal().getItem<DataInfo<number>>(userKey)?.nickname ?? "",
     // 页面级别权限
@@ -39,9 +39,9 @@ export const useUserStore = defineStore("pure-user", {
     SET_AVATAR(avatar: string) {
       this.avatar = avatar;
     },
-    /** 存储用户名 */
-    SET_USERNAME(username: string) {
-      this.username = username;
+    /** 存储账号 */
+    SET_ACCOUNT(account: string) {
+      this.account = account;
     },
     /** 存储昵称 */
     SET_NICKNAME(nickname: string) {
@@ -64,21 +64,39 @@ export const useUserStore = defineStore("pure-user", {
       this.loginDay = Number(value);
     },
     /** 登入 */
+    // async loginByUsername(data) {
+    //   return new Promise<UserResult>((resolve, reject) => {
+    //     userLogin(data)
+    //       .then(data => {
+    //         if (data?.success) setToken(data.data);
+    //         resolve(data);
+    //       })
+    //       .catch(error => {
+    //         reject(error);
+    //       });
+    //   });
+    // },
+
+    /** 自己写的登录 */
+    /** 登录 */
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {
-        getLogin(data)
-          .then(data => {
-            if (data?.success) setToken(data.data);
-            resolve(data);
+        userLogin(data)
+          .then(res => {
+            if (res?.success && res.data?.accessToken) {
+              setToken(res.data); // 存储token + 用户信息
+            } else {
+              reject(new Error(res?.message || "登录失败"));
+            }
+            resolve(res);
           })
-          .catch(error => {
-            reject(error);
-          });
+          .catch(error => reject(error));
       });
     },
+
     /** 前端登出（不调用接口） */
     logOut() {
-      this.username = "";
+      this.account = "";
       this.roles = [];
       this.permissions = [];
       removeToken();
@@ -88,6 +106,7 @@ export const useUserStore = defineStore("pure-user", {
     },
     /** 刷新`token` */
     async handRefreshToken(data) {
+      console.log("刷新token", data);
       return new Promise<RefreshTokenResult>((resolve, reject) => {
         refreshTokenApi(data)
           .then(data => {

@@ -3,7 +3,8 @@ export default {
   redirect: "/error/403",
   meta: {
     icon: "ri/information-line",
-    // showLink: false,
+    // 开启则这个菜单不会显示
+    showLink: false,
     title: "异常页面",
     rank: 9
   },

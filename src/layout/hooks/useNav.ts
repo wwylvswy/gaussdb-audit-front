@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import { getConfig } from "@/config";
 import { emitter } from "@/utils/mitt";
 import Avatar from "@/assets/user.jpg";
+import Avatar1 from "@/assets/head.jpg";
 import { getTopMenu } from "@/router/utils";
 import { useFullscreen } from "@vueuse/core";
 import type { routeMetaType } from "../types";
@@ -40,7 +41,8 @@ export function useNav() {
   /** 头像（如果头像为空则使用 src/assets/user.jpg ） */
   const userAvatar = computed(() => {
     return isAllEmpty(useUserStoreHook()?.avatar)
-      ? Avatar
+      ? // ? Avatar
+        Avatar1
       : useUserStoreHook()?.avatar;
   });
 

@@ -20,9 +20,7 @@ import darkIcon from "@/assets/svg/dark.svg?component";
 import Lock from "~icons/ri/lock-fill";
 import User from "~icons/ri/user-3-fill";
 
-defineOptions({
-  name: "Login"
-});
+defineOptions({ name: "Login" });
 
 const router = useRouter();
 const loading = ref(false);
@@ -37,37 +35,38 @@ dataThemeChange(overallStyle.value);
 const { title } = useNav();
 
 const ruleForm = reactive({
-  username: "admin",
+  account: "admin",
   password: "admin123"
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate(valid => {
-    if (valid) {
-      loading.value = true;
-      useUserStoreHook()
-        .loginByUsername({
-          username: ruleForm.username,
-          password: ruleForm.password
-        })
-        .then(res => {
-          if (res.success) {
-            // 获取后端路由
-            return initRouter().then(() => {
-              disabled.value = true;
-              router
-                .push(getTopMenu(true).path)
-                .then(() => {
-                  message("登录成功", { type: "success" });
-                })
-                .finally(() => (disabled.value = false));
-            });
-          } else {
-            message("登录失败", { type: "error" });
-          }
-        })
-        .finally(() => (loading.value = false));
+  await formEl.validate(async valid => {
+    if (!valid) return;
+
+    loading.value = true;
+    try {
+      const res = await useUserStoreHook().loginByUsername({
+        account: ruleForm.account,
+        password: ruleForm.password
+      });
+
+      if (res.success && res.data?.accessToken) {
+        // 初始化路由
+        await initRouter();
+        disabled.value = true;
+
+        await router.push(getTopMenu(true).path);
+        message("登录成功", { type: "success" });
+      } else {
+        message("账号或密码错误", { type: "error" });
+      }
+    } catch (err) {
+      console.error("登录失败", err);
+      message("登录失败，请稍后再试", { type: "error" });
+    } finally {
+      disabled.value = false;
+      loading.value = false;
     }
   });
 };
@@ -127,10 +126,10 @@ useEventListener(document, "keydown", ({ code }) => {
                     trigger: 'blur'
                   }
                 ]"
-                prop="username"
+                prop="account"
               >
                 <el-input
-                  v-model="ruleForm.username"
+                  v-model="ruleForm.account"
                   clearable
                   placeholder="账号"
                   :prefix-icon="useRenderIcon(User)"

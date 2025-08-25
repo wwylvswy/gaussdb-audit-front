@@ -17,7 +17,11 @@ import { useUserStoreHook } from "@/store/modules/user";
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
-  timeout: 10000,
+  timeout: 100000,
+  // 指向后端服务
+  // baseURL: "http://localhost:8080/api",
+  // 从环境变量读取后端baseURL
+  // baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   headers: {
     Accept: "application/json, text/plain, */*",
     "Content-Type": "application/json",
