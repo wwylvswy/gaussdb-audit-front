@@ -6,6 +6,8 @@ defineOptions({ name: "dmlaudit" });
 import { ref, reactive, nextTick, onMounted, watch } from "vue";
 import * as echarts from "echarts";
 
+const totalScore = ref<number | null>(null);
+
 /* ------------------ STYLES (JS) ------------------ */
 /* 你要求把样式放到 script 中，下面是样式对象，模板用 :style 绑定 */
 const styles = {

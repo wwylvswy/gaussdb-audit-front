@@ -279,6 +279,20 @@ const loadingAudit = ref(false);
 // 详情弹窗
 const detailData = ref<any>(null);
 
+/** 雷达图 & summary */
+const radarEl = ref<HTMLElement | null>(null);
+let radarChart: echarts.ECharts | null = null;
+const radarData = ref<number[]>([0, 0, 0, 0, 0]);
+const totalScore = ref<number | null>(null);
+const optimizeCount = ref<number | null>(null);
+const radarLabels = [
+  "字段设计",
+  "命名设计",
+  "约束设计",
+  "分区设计",
+  "索引设计"
+];
+
 /* ---------- 生命周期 ---------- */
 onMounted(async () => {
   console.log("[ddlaudit] mounted");
@@ -399,19 +413,6 @@ async function safeInitMonaco(timeout = 3000) {
   }
 }
 
-/** 雷达图 & summary */
-const radarEl = ref<HTMLElement | null>(null);
-let radarChart: echarts.ECharts | null = null;
-const radarData = ref<number[]>([0, 0, 0, 0, 0]);
-const totalScore = ref<number | null>(null);
-const optimizeCount = ref<number | null>(null);
-const radarLabels = [
-  "字段设计",
-  "命名设计",
-  "约束设计",
-  "分区设计",
-  "索引设计"
-];
 function initRadar() {
   nextTick(() => {
     try {
